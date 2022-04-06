@@ -1,0 +1,36 @@
+digraph Allocation_Data_Model	{
+	G [label="G: last price"];
+	H [label="H: next sell price",color=red];
+	B [label="B: available assets\n(total position quantity)"];
+	E [label="E: interval",color=red];
+	J [label="J: market movement (%)",color=red];
+	K [label="K: next sell quantity\n(start with 1)",color=blue];
+	M [label="M: reinvestment of available assets (%)",color=blue];
+	onepct [label="?: J < 0.01",shape=polygon,sides=4];
+	JM [label="move H to equalize J and M\lH = (G * K / B) + G\l\lrecompute J\lJ = (H - G) / G\l",color=red,shape=polygon,sides=4];
+	"K / B" [color=blue];
+	"E / G" [color=red];
+	"H - G" [color=red];
+	"?: J == M" [shape=polygon,sides=4];
+	"K++" [color=blue,shape=polygon,sides=4];
+	"Done" [shape=polygon,sides=4];
+	B -> "K / B";
+	K -> "K / B" [color=blue];
+	"K / B" -> M [color=blue];
+	G -> "H - G";
+	H -> "H - G" [color=red];
+	"H - G" -> E [color=red];
+	E -> "E / G" [color=red];
+	G -> "E / G";
+	"E / G" -> J [color=red];
+	M -> "?: J == M" [color=blue];
+	J -> "?: J == M" [color=red];
+	"?: J == M" -> JM [label="J != M"];
+	"?: J == M" -> onepct [label="J == M"];
+	onepct -> "K++" [label="J < 0.01"];
+	onepct -> "Done" [label="J >= 0.01"];
+	"K++" -> JM;
+	JM -> onepct;
+	{rank=min; H K }
+	{rank=max; "Done"}
+}

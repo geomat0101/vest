@@ -1,0 +1,42 @@
+digraph Allocation_Data_Model	{
+	txt [label="A = B + I\lB = D * C\l\lA = D * C + I\lD = F * G\l\lA = F * G * C + I\lC = G / E\l\lA = F * G * G / E + I\lE = G - H\l\lA = F * G * G / (G - H) + I\lF * G * G / (G - H) = A - I\lF * G * G = (A - I) * (G - H)\lF * G * G / (A - I) = G - H\l\lH = G - (F * G * G / (A - I))\l\lnext buy price = last buy price - ( last buy quantity * (last buy price**2) ) / (total allocation - existing position cost)",shape=polygon,sides=4,fontname=Courier,labeljust=l,rank=max];
+	"F: last buy quantity" -> "F * G";
+	"G: last buy price" -> "F * G";
+	"F * G" -> "D: cost per buy";
+	"G: last buy price" -> "G - H";
+	"H: next buy price" -> "G - H";
+	"G - H" -> "E: buy interval";
+	"G: last buy price" -> "G / E";
+	"E: buy interval" -> "G / E";
+	"G / E" -> "C: number of buys";
+	"D: cost per buy" -> "D * C";
+	"C: number of buys" -> "D * C";
+	"D * C" -> "B: cost of all buys";
+	"B: cost of all buys" -> "B + I";
+	"I: existing position cost" -> "B + I";
+	"B + I" -> "A: total allocation";
+	"A: total allocation" -> txt;
+	{rank=same; "I: existing position cost" "H: next buy price";}
+	/*
+A = B + I
+B = D * C
+
+A = D * C + I
+D = F * G
+
+A = F * G * C + I
+C = G / E
+
+A = F * G * G / E + I
+E = G - H
+
+A = F * G * G / (G - H) + I
+F * G * G / (G - H) = A - I
+F * G * G = (A - I) * (G - H)
+F * G * G / (A - I) = G - H
+
+H = G - (F * G * G / (A - I))
+
+next buy price = last buy price - ( last buy quantity * (last buy price**2) ) / (total allocation - existing position cost)
+	*/
+}

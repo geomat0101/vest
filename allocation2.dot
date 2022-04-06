@@ -1,0 +1,51 @@
+digraph Allocation_Data_Model	{
+	A [label="A: total allocation",color=green];
+	B [label="B: available allocation",color=green];
+	E [label="E: buy interval",color=red];
+	G [label="G: last buy price"];
+	H [label="H: next buy price",color=red];
+	I [label="I: existing position cost"];
+	J [label="J: market movement (%)",color=red];
+	K [label="K: next buy quantity\n(start with 1)",color=blue];
+	L [label="L: next buy cost",color=purple];
+	M [label="M: reinvestment of available allocation (%)",color=brown];
+	onepct [label="?: J < 0.01",shape=polygon,sides=4];
+	JM [label="move H to equalize J and M\lH = (G * B) / (K * G + B)\l\lrecompute J\lJ = (G - H) / G\l",color=red,shape=polygon,sides=4];
+	"L / B" [color=brown];
+	"K * H" [color=purple];
+	"E / G" [color=red];
+	"G - H" [color=red];
+	"A - I" [color=green];
+	"?: J == M" [shape=polygon,sides=4];
+	"K++" [color=blue,shape=polygon,sides=4];
+	"Done" [shape=polygon,sides=4];
+	G -> "G - H";
+	H -> "G - H" [color=red];
+	"G - H" -> E [color=red];
+	I -> "A - I";
+	A -> "A - I" [color=green];
+	"A - I" -> B [color=green];
+	E -> "E / G" [color=red];
+	G -> "E / G";
+	"E / G" -> J [color=red];
+	K -> "K * H" [color=blue];
+	H -> "K * H" [color=red];
+	"K * H" -> L [color=red];
+	"K * H" -> L [color=blue];
+	L -> "L / B" [color=red];
+	L -> "L / B" [color=blue];
+	B -> "L / B" [color=green];
+	"L / B" -> M [color=red];
+	"L / B" -> M [color=blue];
+	"L / B" -> M [color=green];
+	M -> "?: J == M" [color=brown];
+	J -> "?: J == M" [color=red];
+	"?: J == M" -> JM [label="J != M"];
+	"?: J == M" -> onepct [label="J == M"];
+	onepct -> "K++" [label="J < 0.01"];
+	onepct -> "Done" [label="J >= 0.01"];
+	"K++" -> JM;
+	JM -> onepct;
+	{rank=min; H K A}
+	{rank=max; "Done"}
+}
